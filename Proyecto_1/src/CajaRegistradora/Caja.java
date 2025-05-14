@@ -7,11 +7,8 @@ public class Caja {
     public static void main(String[] args) 
     {
         Scanner scanner =  new Scanner(System.in).useDelimiter("\n");
-        
-        String input = "" , productoEstrella = "";
-        
-        boolean abierto = true;
-        
+        String productoEstrella = "";
+        boolean abierto = true, salir = false;
         int AzucarCompra = 25,                    AzucarVenta = 30;  
         int AvenaCompraB = 20, AvenaCompraC = 22, AvenaVenta = 25;
         int TrigoCompra = 30,                     TrigoVenta = 32;
@@ -20,10 +17,10 @@ public class Caja {
         int comprasDia = 0 , ventasDia =0;
         double CantAzucarVend = 0, CantTrigoVend = 0, CantMaizVend = 0, CantAvenaVend = 0;
         double CantAzucar = 0, CantAvena = 0, CantTrigo = 0, CantMaiz = 0;
-        double mayorProducto = 0, mayorVenta = 0, mayorCompra = 0;
-        double dinero = 0, ganancias = 0, ingreso = 0, ingresoVentas = 0, gastos = 0, deposito;
+        double mayorVenta = 0, mayorCompra = 0;
+        double dinero = 0, ganancias = 0, ingreso, ingresoVentas = 0, gastos = 0, deposito;
         double inventario = CantAzucar + CantAvena + CantTrigo + CantMaiz;
-        while (!input.equals("6")) 
+        while (!salir) 
         {
             System.out.println("\n----------------------");
             System.out.println("     -*- MENU -*-");
@@ -34,9 +31,9 @@ public class Caja {
             System.out.println("5.   Cerrar");
             System.out.println("6.   Salir");
             System.out.print("\nIngrese una opcion: ");
-            input = scanner.next().toLowerCase();
+            byte input = scanner.nextByte();
             switch (input){
-                case "1"://Abrir Caja
+                case 1://Abrir Caja
                     if (abierto){
                         System.out.print("\nCuanto dinero desea agregar a caja? : HNL.");
                         dinero +=  scanner.nextDouble();
@@ -46,13 +43,11 @@ public class Caja {
                         abierto = true;
                     }
                     break;
-                case "2"://Comprar Productos
-                    if (!abierto) {
-                        System.out.println("\nNecesita abrir caja antes.");
+                case 2://Comprar Productos
+                    if (!abierto) { System.out.println("\nNecesita abrir caja antes.");
                         break;
                      }
-                    if (dinero <= 0) {
-                        System.out.println("\nNecesita agregar dinero a caja.");
+                    if (dinero < 18) { System.out.println("\nNecesita agregar dinero a caja.");
                         break;
                      }
                     System.out.print("\nSeleccione el tipo de proveedor (A, B, C): ");
@@ -66,34 +61,29 @@ public class Caja {
                         System.out.println("Trigo    Precio: " + TrigoCompra);
                         System.out.println("Maiz     Precio: " + MaizCompra);
 
-                        System.out.print("Que producto desea comprar?: ");
+                        System.out.print("\nQue producto desea comprar?: ");
                         String producto = scanner.next().toLowerCase();
 
                         double cantidad;
                         double costo = 0;
                         boolean compraValida = true;
-
-                        if (producto.equals("maiz") && proveedor.equals("A")) {
-                            costo = MaizCompra;
-                        } else if (producto.equals("azucar") && proveedor.equals("A")) {
-                            costo = AzucarCompra;
-                        } else if (producto.equals("trigo") && proveedor.equals("B")) {
-                            costo = TrigoCompra;
-                        } else if (producto.equals("avena") && proveedor.equals("B")) {
-                            costo = AvenaCompraB;
-                        } else if (producto.equals("avena") && proveedor.equals("C")) {
-                            costo = AvenaCompraC;
-                        }else {
+                        // Dandole un valor a la variable costo
+                        if (producto.equals("maiz") && proveedor.equals("A")) costo = MaizCompra; 
+                        else if (producto.equals("azucar") && proveedor.equals("A"))  costo = AzucarCompra;
+                        else if (producto.equals("trigo") && proveedor.equals("B")) costo = TrigoCompra;
+                        else if (producto.equals("avena") && proveedor.equals("B")) costo = AvenaCompraB;
+                        else if (producto.equals("avena") && proveedor.equals("C")) costo = AvenaCompraC;
+                        else {
                             compraValida = false;
                             System.out.println("\nEl proveedor no puede entregar ese producto.");
                         }
                          if (compraValida) {
-                            System.out.print("Cuantos kilogramos desea?: ");
+                            System.out.print("\nCuantos kilogramos desea?: ");
                             cantidad = scanner.nextDouble();
                             double total = cantidad * costo;
 
                             if (total > dinero) {
-                                System.out.println("Fondos insuficientes. Agregue mas dinero o reduzca la cantidad.");
+                                System.out.println("\nFondos insuficientes. Agregue mas dinero o reduzca la cantidad.");
                             } else {
                                 dinero -= total;
                                 ganancias -= total;
@@ -104,42 +94,35 @@ public class Caja {
                                     mayorCompra = total;
                                 }
                                 switch (producto){
-                                    case "maiz":
-                                        CantMaiz += cantidad;
+                                    case "maiz": CantMaiz += cantidad;
                                         break;
-                                    case "azucar":
-                                        CantAzucar += cantidad;
+                                    case "azucar": CantAzucar += cantidad;
                                         break;
-                                    case "trigo":
-                                        CantTrigo += cantidad;
+                                    case "trigo": CantTrigo += cantidad;
                                         break;
-                                    case "avena":
-                                        CantAvena += cantidad;
+                                    case "avena": CantAvena += cantidad;
                                         break;
                                 }
+                                inventario = CantAzucar + CantAvena + CantTrigo + CantMaiz;
                              }
                          }
                     break;
-                case "3"://Vender Productos
-                    if (!abierto) {
-                        System.out.println("\nNecesita abrir caja antes.");
+                case 3://Vender Productos
+                    if (!abierto) { System.out.println("\nNecesita abrir caja antes.");
                         break;
                     }
-                    if (inventario <= 0) {
-                        System.out.println("\nNecesita comprar productos.");
+                    if (inventario <= 0) { System.out.println("\nNecesita comprar productos.");
                         break;
                     }
-                    System.out.print("Seleccione el tipo de cliente: A, B, C : ");
+                    System.out.print("\nSeleccione el tipo de cliente: A, B, C : ");
                     String Cliente = scanner.next().toUpperCase();
                     if (!Cliente.equals("A") && !Cliente.equals("B") && !Cliente.equals("C")) {
                         System.out.println("\nNo existe este cliente.");
                         break;
                     }
-
-                    
                     String selecion = "";
                     int subTotal = 0;
-                    String Factura = "\n         **** Factura ****\n";
+                    String Factura = "\n         **** Factura ****";
                     while(!selecion.equals("salir")){
                         double cantidadProducto =0;
                         double precio = 0;
@@ -152,39 +135,28 @@ public class Caja {
                         System.out.print("Que producto desea? : ");
 
                         selecion = scanner.next().toLowerCase();
-
-                        if (selecion.equals("maiz") && (Cliente.equals("C") || Cliente.equals("A"))){
-                            precio = MaizVenta;
-                        }
-                        else if (selecion.equals("trigo") && (Cliente.equals("B") || Cliente.equals("A"))) {
-                            precio = TrigoVenta;
-                        }
-                        else if (selecion.equals("avena") && (Cliente.equals("B") || Cliente.equals("A"))) {
-                            precio = AvenaVenta;
-                        }
-                        else if (selecion.equals("azucar") && (Cliente.equals("B") || Cliente.equals("A"))) {
-                            precio = AzucarVenta;
-                        }else{
-                            System.out.println("El cliente no puede comprar este producto");
+                        // Dandole un valor a la variable precio
+                        if (selecion.equals("maiz") && (Cliente.equals("C") || Cliente.equals("A")))precio = MaizVenta;
+                        else if (selecion.equals("trigo") && (Cliente.equals("B") || Cliente.equals("A"))) precio = TrigoVenta;
+                        else if (selecion.equals("avena") && (Cliente.equals("B") || Cliente.equals("A"))) precio = AvenaVenta;
+                        else if (selecion.equals("azucar") && (Cliente.equals("B") || Cliente.equals("A"))) precio = AzucarVenta;
+                        else{
+                            System.out.println("\nEl cliente no puede comprar este producto.");
                             VentaValida = false;
                              }
                         if (VentaValida){
                             switch (selecion){
-                                case "maiz":
-                                    cantidadProducto = CantMaiz;
+                                case "maiz": cantidadProducto = CantMaiz;
                                     break;
-                                case "azucar":
-                                    cantidadProducto = CantAzucar;
+                                case "azucar": cantidadProducto = CantAzucar;
                                     break;
-                                case "trigo":
-                                    cantidadProducto = CantTrigo;
+                                case "trigo": cantidadProducto = CantTrigo;
                                     break;
-                                case "avena":
-                                    cantidadProducto = CantAvena;
+                                case "avena": cantidadProducto = CantAvena;
                                     break;
                             }
                             if (0<cantidadProducto){
-                                System.out.print("Cuantos kilogramos desea? : ");
+                                System.out.print("\nCuantos kilogramos desea? : ");
                                 cantidad = scanner.nextDouble();
                                 if (cantidadProducto>cantidad){
                                     ingreso = precio * cantidad;
@@ -208,20 +180,18 @@ public class Caja {
                                     }
                                 if (ingreso > 0){
                                     Factura += "\n"+selecion + " Precio: "+ precio + " Cantidad: "+cantidad + " Total: "+ingreso;
-                                    if (mayorProducto < cantidad){
-                                        productoEstrella = selecion; 
-                                    }if (mayorVenta < ingreso){
+                                    if (mayorVenta < ingreso){
                                         mayorVenta = ingreso;
                                     }
                                     ganancias += ingreso;       subTotal += ingreso;     ingresoVentas += ingreso;    
                                 }else{
-                                System.out.print("\nNo hubo compra.\n");  
+                                System.out.print("\nNo hubo compra.");  
                                 }
                             }else{
-                                System.out.print("\nLa tienda solo cuenta con: "+ cantidadProducto + "kg.\n");  
+                                System.out.print("\nLa tienda solo cuenta con: "+ cantidadProducto + "kg.");  
                                 }
                             }else{
-                                System.out.print("\nSe agotaron sus existencias en tienda.\n");  
+                                System.out.print("\nSe agotaron sus existencias en tienda.");  
                                 }
                         }
                     }
@@ -238,9 +208,16 @@ public class Caja {
                     System.out.println("Impuesto del 7%: "+ String.format("%.2f",impuesto));
                     System.out.println("Total: "+ String.format("%.2f",Total));
                     break;
-                case "4"://Reporte
-                    var PromCompra = (comprasDia > 0) ? gastos/comprasDia : 0;
-                    var PromVenta = (ventasDia > 0) ? ingresoVentas/ventasDia : 0;
+                case 4://Reporte
+                    double PromCompra = (comprasDia > 0) ? gastos/comprasDia : 0;
+                    double PromVenta = (ventasDia > 0) ? ingresoVentas/ventasDia : 0;
+                    double maxVendido = Math.max(Math.max(CantAzucarVend, CantAvenaVend), Math.max(CantTrigoVend, CantMaizVend));
+
+                    if (maxVendido == CantAzucarVend) productoEstrella = "azucar";
+                    else if (maxVendido == CantAvenaVend) productoEstrella = "avena";
+                    else if (maxVendido == CantTrigoVend) productoEstrella = "trigo";
+                    else if (maxVendido == CantMaizVend) productoEstrella = "maiz";
+
                     System.out.println("\nTotal de efectivo en caja: HNL."+ dinero);
                     System.out.println("Total de ventas realizadas: "+ ingresoVentas + " | Total de compras realizadas: "+ gastos);
                     System.out.println("Ventas realizadas hoy: "+ ventasDia + " | Compras realizadas hoy: "+ comprasDia + " | Ganancias: " + ganancias);
@@ -248,9 +225,9 @@ public class Caja {
                     System.out.println("Mayor venta: "+ mayorVenta + " | Mayor Compra: "+ mayorCompra);
                     System.out.println("Producto estrella: "+ productoEstrella);
                     break;
-                case "5"://Cierre
+                case 5://Cierre
                     System.out.println("\nTotal de efectivo en caja: HNL." + dinero);
-                    ventasDia = 0; comprasDia = 0; productoEstrella = ""; ingresoVentas =0;ganancias = 0; gastos = 0; mayorVenta=0; mayorCompra = 0;
+ /*Reinicio */      ventasDia = 0; comprasDia = 0; productoEstrella = ""; ingresoVentas =0;ganancias = 0; gastos = 0; mayorVenta=0; mayorCompra = 0;
                     System.out.print("Solo puede depositar el 60% del dinero al banco. Desea depositar? : ");
                     deposito = scanner.nextDouble();
                     abierto = false;
@@ -258,12 +235,12 @@ public class Caja {
                         System.out.print("Ingresastes a tu cuenta de banco: HNL."+deposito);
                     }
                     break;
-                case "6":
+                case 6:
+                    salir = true;
                     System.out.println("\nApagando sistema...");
                     break;
                 default:
                     System.out.println("\nNo existe esta opcion");
-            
             }   
         }
     }
